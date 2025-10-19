@@ -1,16 +1,50 @@
 import React, { useState, useEffect } from "react";
 import { dummyPlans } from "../assets/assets";
+import { useAppContext } from "../../context/AppContext";
 
 function Credits() {
   const [card, setCard] = useState([]);
+  const { axios, token } = useAppContext();
 
-  const fetchCard = () => {
-    setCard(dummyPlans);
+  const fetchCard = async () => {
+    try {
+      const { data } = await axios.get("/api/v3/getPlans", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (data.success) {
+        setCard(data.Plans);
+      }
+      // setCard(dummyPlans);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
     fetchCard();
   }, []);
+
+  // BUY PLANs
+  const handleBuyPlan = async (planId) => {
+    try {
+      const { data } = await axios.post(
+        "/api/v3/purchasePlan",
+        { planId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (data.success) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex flex-wrap  w-full justify-center gap-6 p-4 items-center">
@@ -37,6 +71,7 @@ function Credits() {
               </ul>
             </div>
             <button
+              onClick={() => handleBuyPlan(item._id)}
               type="button"
               className={`bg-indigo-600 ${
                 item.name === "Pro" && "bg-zinc-900"

@@ -101,7 +101,7 @@ export const purchasePlan = async (req, res) => {
       expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24 hours
     });
 
-    return res.status(200).json({ url: session.url });
+    return res.status(200).json({ success: true, url: session.url });
   } catch (error) {
     console.error("Error in purchasePlan:", error);
     return res

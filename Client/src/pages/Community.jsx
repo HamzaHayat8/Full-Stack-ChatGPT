@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { dummyPublishedImages } from "../assets/assets";
 import Loading from "./Loading";
+import { useAppContext } from "../../context/AppContext";
 
 function Community() {
   const [img, setImg] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  console.log("wewww", img);
+  // console.log("wewww", img);
 
-  const fetchImg = () => {
-    setImg(dummyPublishedImages);
+  const { axios } = useAppContext();
+
+  const fetchImg = async () => {
+    const { data } = await axios.get("/api/v1/getPublicImg");
+    if (data.success) {
+      // console.log("1234", data.PublicIMg);
+      setImg(data.PublicIMg);
+    }
+    // setImg(dummyPublishedImages);
     setLoading(false);
   };
 
